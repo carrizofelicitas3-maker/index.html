@@ -3,79 +3,68 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Simulador Logístico Citrusvil - Cámaras 6-11</title>
+    <title>Simulador Avanzado Citrusvil - Cámaras 6-11</title>
     <style>
         :root { --bg: #0f172a; --accent: #38bdf8; --card: #ffffff; }
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f1f5f9; color: #1e293b; }
-        header { background: var(--bg); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        main { display: grid; grid-template-columns: 350px 1fr; gap: 20px; padding: 20px; }
-        .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
-        h2 { font-size: 1.1rem; margin-top: 0; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
-        label { display: block; margin: 10px 0 5px; font-weight: 600; font-size: 0.85rem; }
-        input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 10px; }
-        button { background: #0284c7; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-bottom: 10px; }
-        button:hover { background: #0369a1; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; text-align: center; }
-        .stat-val { display: block; font-size: 1.5rem; font-weight: bold; color: #0284c7; }
-        .stat-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; }
-        #log { background: #1e293b; color: #34d399; font-family: monospace; padding: 15px; height: 300px; overflow-y: auto; border-radius: 8px; font-size: 0.8rem; line-height: 1.4; }
-        .camara-status { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .progress-bar { flex-grow: 1; background: #e2e8f0; height: 12px; border-radius: 6px; overflow: hidden; }
-        .progress-fill { background: #38bdf8; height: 100%; transition: width 0.3s; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f1f5f9; color: #1e293b; }
+        header { background: var(--bg); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; }
+        main { display: grid; grid-template-columns: 380px 1fr; gap: 20px; padding: 20px; }
+        .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2 { font-size: 1.1rem; margin-top: 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        label { display: block; margin: 10px 0 5px; font-weight: 600; font-size: 0.8rem; }
+        input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+        button { background: #0284c7; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: white; padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .stat-val { display: block; font-size: 1.4rem; font-weight: bold; color: #0284c7; }
+        .stat-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; }
+        #log { background: #1e293b; color: #34d399; font-family: monospace; padding: 15px; height: 250px; overflow-y: auto; border-radius: 8px; font-size: 0.8rem; }
+        .camara-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .progress-bar { flex-grow: 1; background: #e2e8f0; height: 20px; border-radius: 4px; position: relative; }
+        .progress-fill { background: #38bdf8; height: 100%; border-radius: 4px; transition: width 0.5s; }
+        .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.75rem; font-weight: bold; line-height: 20px; color: #000; }
+        .critical { color: #ef4444; font-weight: bold; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div>
-        <strong>Citrusvil S.A.</strong> | Simulador de Gestión de Stock
-    </div>
-    <div style="font-size: 0.8rem;">Cámaras 6 a 11 • Superpallets</div>
+    <strong>Citrusvil S.A. | Stock Dinámico</strong>
+    <span>Cámaras 6 a 11 (Cap. 180 SP c/u)</span>
 </header>
 
 <main>
-    <section class="card">
-        <h2>Configuración Operativa</h2>
-        <label>Días a simular:</label>
-        <input type="number" id="simDays" value="15">
-        
-        <label>Producción diaria (SP):</label>
-        <input type="number" id="prodDaily" value="45">
-        
-        <label>Camiones disponibles:</label>
-        <input type="number" id="trucksAvailable" value="3">
-        
-        <label>Tiempo ciclo Interplanta (Horas):</label>
-        <input type="number" id="cycleTime" value="1.5" step="0.1">
-
-        <button id="startSim">Ejecutar Simulación</button>
-        <div id="statusIndicator" style="text-align: center; font-size: 0.8rem; color: #64748b;">Esperando inicio...</div>
+    <section>
+        <div class="card">
+            <h2>Inventario Inicial (SP)</h2>
+            <div class="grid-inputs" id="initialInventory">
+                </div>
+        </div>
+        <div class="card">
+            <h2>Configuración</h2>
+            <label>Días a simular:</label>
+            <input type="number" id="simDays" value="15">
+            <label>Producción diaria (SP):</label>
+            <input type="number" id="prodDaily" value="45">
+            <label>Camiones (Interplanta):</label>
+            <input type="number" id="trucks" value="3">
+            <button id="runBtn" style="margin-top:15px;">Ejecutar Simulación</button>
+        </div>
     </section>
 
     <section>
         <div class="stats-grid">
-            <div class="stat-box">
-                <span class="stat-label">Total Producido</span>
-                <span class="stat-val" id="totalProd">0</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-label">Viajes Interplanta</span>
-                <span class="stat-val" id="totalTrips">0</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-label">Aprobado Cliente (Frío)</span>
-                <span class="stat-val" id="totalReady">0</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-label">Ocupación Total</span>
-                <span class="stat-val" id="totalOccupancy">0%</span>
-            </div>
+            <div class="stat-box"><span class="stat-label">Total Stock</span><span class="stat-val" id="totalStock">0</span></div>
+            <div class="stat-box"><span class="stat-label">Libre Total</span><span class="stat-val" id="totalFree">0</span></div>
+            <div class="stat-box"><span class="stat-label">Viajes Realizados</span><span class="stat-val" id="totalTrips">0</span></div>
+            <div class="stat-box"><span class="stat-label">Estado Sistema</span><span class="stat-val" id="sysStatus">OK</span></div>
         </div>
 
-        <div class="card" style="margin-bottom: 20px;">
-            <h2>Estado de Cámaras (Capacidad: 180 SP c/u)</h2>
-            <div id="camerasContainer"></div>
+        <div class="card">
+            <h2>Ocupación de Cámaras</h2>
+            <div id="camVisuals"></div>
         </div>
 
         <div id="log"></div>
@@ -83,117 +72,5 @@
 </main>
 
 <script>
-    const LOG_EL = document.getElementById('log');
-    const CAMERAS_DIV = document.getElementById('camerasContainer');
-    
-    // Configuración Citrusvil fija
-    const CAMERAS_IDS = [6, 7, 8, 9, 10, 11];
-    const CAP_MAX = 180;
-    const COLD_HOURS = 240; // 10 días
-
-    let state = {
-        time: 0,
-        prodTotal: 0,
-        tripsTotal: 0,
-        trucksInUse: 0,
-        cameras: [],
-        events: []
-    };
-
-    function initSim() {
-        state.cameras = CAMERAS_IDS.map(id => ({
-            id,
-            occupied: 0,
-            lotes: [] // {sp: 45, timeIn: 0}
-        }));
-        state.time = 0;
-        state.prodTotal = 0;
-        state.tripsTotal = 0;
-        state.events = [];
-        LOG_EL.innerHTML = "";
-    }
-
-    function addLog(msg) {
-        const timeStr = `[Día ${(state.time/24).toFixed(1)}]`;
-        LOG_EL.innerHTML += `<div>${timeStr} ${msg}</div>`;
-        LOG_EL.scrollTop = LOG_EL.scrollHeight;
-    }
-
-    function updateUI() {
-        document.getElementById('totalProd').innerText = state.prodTotal;
-        document.getElementById('totalTrips').innerText = state.tripsTotal;
-        
-        let totalOcc = 0;
-        let readyToShip = 0;
-        CAMERAS_DIV.innerHTML = "";
-
-        state.cameras.forEach(cam => {
-            totalOcc += cam.occupied;
-            const approved = cam.lotes.filter(l => (state.time - l.timeIn) >= COLD_HOURS).reduce((a,b) => a + b.sp, 0);
-            readyToShip += approved;
-
-            const perc = (cam.occupied / CAP_MAX) * 100;
-            CAMERAS_DIV.innerHTML += `
-                <div class="camara-status">
-                    <div style="width:80px; font-weight:bold;">Cámara ${cam.id}</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width:${perc}%"></div></div>
-                    <div style="width:120px; font-size:0.8rem; text-align:right;">${cam.occupied}/180 SP</div>
-                </div>
-            `;
-        });
-
-        document.getElementById('totalReady').innerText = readyToShip;
-        document.getElementById('totalOccupancy').innerText = ((totalOcc / (180*6))*100).toFixed(1) + "%";
-    }
-
-    function runSim() {
-        initSim();
-        const maxDays = parseInt(document.getElementById('simDays').value);
-        const prodPerDay = parseInt(document.getElementById('prodDaily').value);
-        const maxTrucks = parseInt(document.getElementById('trucksAvailable').value);
-        const cycleTime = parseFloat(document.getElementById('cycleTime').value);
-
-        addLog("Iniciando ciclo operativo Citrusvil...");
-
-        for (let day = 0; day < maxDays; day++) {
-            state.time = day * 24;
-            
-            // 1. Entrada de Producción
-            let spRestante = prodPerDay;
-            state.prodTotal += prodPerDay;
-
-            for (let cam of state.cameras) {
-                if (cam.occupied < CAP_MAX) {
-                    let espacio = CAP_MAX - cam.occupied;
-                    let aIngresar = Math.min(espacio, spRestante);
-                    cam.occupied += aIngresar;
-                    cam.lotes.push({ sp: aIngresar, timeIn: state.time });
-                    spRestante -= aIngresar;
-                    if (aIngresar > 0) addLog(`Ingresan ${aIngresar} SP a Cámara ${cam.id}`);
-                }
-                if (spRestante <= 0) break;
-            }
-
-            if (spRestante > 0) addLog(`⚠️ ALERTA: Sin espacio para ${spRestante} SP`);
-
-            // 2. Lógica Interplanta (Si la cámara tiene al menos 45 SP - 1 día de prod)
-            state.cameras.forEach(cam => {
-                if (cam.occupied >= 45) {
-                    // Simular 9 viajes usando los camiones disponibles
-                    // Tiempo estimado = (9 viajes * ciclo) / camiones
-                    let tiempoNecesario = (9 * cycleTime) / maxTrucks;
-                    state.tripsTotal += 9;
-                    cam.occupied -= 45; // Se llevan 1 día de producción
-                    addLog(`🚛 Interplanta: 9 viajes realizados desde C${cam.id}. Duración estimada: ${tiempoNecesario.toFixed(1)}h`);
-                }
-            });
-        }
-        updateUI();
-        addLog("Simulación finalizada.");
-    }
-
-    document.getElementById('startSim').addEventListener('click', runSim);
-</script>
-
-</body>
+    const
 </html>
